@@ -11,7 +11,7 @@ export PATH
 #=================================================
 
 sh_ver="1.3.0"
-github="github.com/uxh/onefast/raw/master"
+github="github.com/caonimagfw/onefast/raw/master"
 
 Green_font_prefix="\033[32m"
 Red_font_prefix="\033[31m"
