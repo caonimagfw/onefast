@@ -192,9 +192,9 @@ installbbrmod(){
 installbbrplus(){
 	kernel_version="4.14.129"
 	if [[ "${release}" == "centos" ]]; then
-		wget -N --no-check-certificate https://${github}/bbrplus/${release}/${version}/kernel-${kernel_version}.rpm
-		yum install -y kernel-${kernel_version}.rpm
-		rm -f kernel-${kernel_version}.rpm
+		wget -N --no-check-certificate https://${github}/bbrplus/${release}/${version}/kernel-${kernel_version}-bbrplus.rpm
+		yum install -y kernel-${kernel_version}-bbrplus.rpm
+		rm -f kernel-${kernel_version}-bbrplus.rpm
 	elif [[ "${release}" == "debian" || "${release}" == "ubuntu" ]]; then
 		mkdir bbrplus && cd bbrplus
 		wget -N --no-check-certificate http://${github}/bbrplus/debian-ubuntu/${bit}/linux-headers-${kernel_version}.deb
