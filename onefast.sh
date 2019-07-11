@@ -61,7 +61,7 @@ function checkReleaseVersion(){
 function checkStatus(){
 	kernel_version=`uname -r | awk -F "-" '{print $1}'`
 	kernel_version_full=`uname -r`
-	if [[ ${kernel_version_full} == "4.14.91-bbrplus" ]]; then
+	if [[ ${kernel_version_full} == "4.14.129-bbrplus" ]]; then
 		kernel_status="BBRplus"
 	elif [[ ${kernel_version} == "3.10.0" || ${kernel_version} == "3.16.0" || ${kernel_version} == "3.2.0" || ${kernel_version} == "4.4.0" || ${kernel_version} == "3.13.0"  || ${kernel_version} == "2.6.32" ]]; then
 		kernel_status="Lotserver"
@@ -190,7 +190,7 @@ installbbrmod(){
 
 #安装BBRplus内核
 installbbrplus(){
-	kernel_version="4.14.91"
+	kernel_version="4.14.129"
 	if [[ "${release}" == "centos" ]]; then
 		wget -N --no-check-certificate https://${github}/bbrplus/${release}/${version}/kernel-${kernel_version}.rpm
 		yum install -y kernel-${kernel_version}.rpm
