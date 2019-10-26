@@ -65,7 +65,7 @@ function checkStatus(){
 		kernel_status="BBRplus"
 	elif [[ ${kernel_version} == "3.10.0" || ${kernel_version} == "3.16.0" || ${kernel_version} == "3.2.0" || ${kernel_version} == "4.4.0" || ${kernel_version} == "3.13.0"  || ${kernel_version} == "2.6.32" ]]; then
 		kernel_status="Lotserver"
-	elif [[ `echo ${kernel_version} | awk -F'.' '{print $1}'` == "4" ]] && [[ `echo ${kernel_version} | awk -F'.' '{print $2}'` -ge 9 ]]; then
+	elif [[ ${kernel_version} == "5.3.7" ]];then 
 		kernel_status="BBR"
 	else 
 		kernel_status="noinstall"
