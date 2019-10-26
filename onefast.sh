@@ -537,6 +537,7 @@ BBR_grub(){
     #elif [[ "${release}" == "debian" || "${release}" == "ubuntu" ]]; then
     #    /usr/sbin/update-grub
     #fi
+    echo -e "nothing "
 }
 
 #############内核管理组件#############
