@@ -136,7 +136,7 @@ installbbr(){
 		sudo rpm -Uvh https://www.elrepo.org/elrepo-release-7.0-4.el7.elrepo.noarch.rpm
 		sudo yum --enablerepo=elrepo-kernel install kernel-ml -y
 		sudo egrep ^menuentry /etc/grub2.cfg | cut -f 2 -d \'		
-		sudo grub2-set-default 1
+		sudo grub2-set-default 0
 	elif [[ "${release}" == "debian" || "${release}" == "ubuntu" ]]; then
 		mkdir bbr && cd bbr
 		wget http://security.debian.org/debian-security/pool/updates/main/o/openssl/libssl1.0.0_1.0.1t-1+deb8u10_amd64.deb
