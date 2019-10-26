@@ -677,7 +677,7 @@ mainControl(){
 	echo
 	echo -e "${Green_font_prefix}0.${Font_color_suffix} 升级脚本"
 	echo -e "————————————内核管理————————————"
-	echo -e "${Green_font_prefix}1.${Font_color_suffix} 安装 BBR 内核"
+	echo -e "${Green_font_prefix}1.${Font_color_suffix} 安装 BBR For Centos 7 内核"
 	echo -e "${Green_font_prefix}2.${Font_color_suffix} 安装 BBRmod 内核"
 	echo -e "${Green_font_prefix}3.${Font_color_suffix} 安装 BBRplus 内核" 
 	echo -e "${Green_font_prefix}4.${Font_color_suffix} 安装 Lotserver 内核[锐速]"
