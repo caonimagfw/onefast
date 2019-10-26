@@ -125,7 +125,7 @@ function checkStatus(){
 
 #安装BBR内核
 installbbr(){
-	kernel_version="4.11.8"
+	kernel_version="5.3.7"
 	if [[ "${release}" == "centos" ]]; then
 		#rpm --import http://${github}/bbr/${release}/RPM-GPG-KEY-elrepo.org
 		#yum install -y http://${github}/bbr/${release}/${version}/${bit}/kernel-ml-${kernel_version}.rpm
