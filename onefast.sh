@@ -127,11 +127,16 @@ function checkStatus(){
 installbbr(){
 	kernel_version="4.11.8"
 	if [[ "${release}" == "centos" ]]; then
-		rpm --import http://${github}/bbr/${release}/RPM-GPG-KEY-elrepo.org
-		yum install -y http://${github}/bbr/${release}/${version}/${bit}/kernel-ml-${kernel_version}.rpm
-		yum remove -y kernel-headers
-		yum install -y http://${github}/bbr/${release}/${version}/${bit}/kernel-ml-headers-${kernel_version}.rpm
-		yum install -y http://${github}/bbr/${release}/${version}/${bit}/kernel-ml-devel-${kernel_version}.rpm
+		#rpm --import http://${github}/bbr/${release}/RPM-GPG-KEY-elrepo.org
+		#yum install -y http://${github}/bbr/${release}/${version}/${bit}/kernel-ml-${kernel_version}.rpm
+		#yum remove -y kernel-headers
+		#yum install -y http://${github}/bbr/${release}/${version}/${bit}/kernel-ml-headers-${kernel_version}.rpm
+		#yum install -y http://${github}/bbr/${release}/${version}/${bit}/kernel-ml-devel-${kernel_version}.rpm
+		sudo rpm --import https://www.elrepo.org/RPM-GPG-KEY-elrepo.org
+		sudo rpm -Uvh https://www.elrepo.org/elrepo-release-7.0-4.el7.elrepo.noarch.rpm
+		sudo yum --enablerepo=elrepo-kernel install kernel-ml -y
+		sudo egrep ^menuentry /etc/grub2.cfg | cut -f 2 -d \'		
+		sudo grub2-set-default 1
 	elif [[ "${release}" == "debian" || "${release}" == "ubuntu" ]]; then
 		mkdir bbr && cd bbr
 		wget http://security.debian.org/debian-security/pool/updates/main/o/openssl/libssl1.0.0_1.0.1t-1+deb8u10_amd64.deb
@@ -515,23 +520,23 @@ detele_kernel(){
 
 #更新引导
 BBR_grub(){
-	if [[ "${release}" == "centos" ]]; then
-        if [[ ${version} = "6" ]]; then
-            if [ ! -f "/boot/grub/grub.conf" ]; then
-                echo -e "${Error} /boot/grub/grub.conf 找不到，请检查."
-                exit 1
-            fi
-            sed -i 's/^default=.*/default=0/g' /boot/grub/grub.conf
-        elif [[ ${version} = "7" ]]; then
-            if [ ! -f "/boot/grub2/grub.cfg" ]; then
-                echo -e "${Error} /boot/grub2/grub.cfg 找不到，请检查."
-                exit 1
-            fi
-            grub2-set-default 0
-        fi
-    elif [[ "${release}" == "debian" || "${release}" == "ubuntu" ]]; then
-        /usr/sbin/update-grub
-    fi
+	#if [[ "${release}" == "centos" ]]; then
+    #    if [[ ${version} = "6" ]]; then
+    #        if [ ! -f "/boot/grub/grub.conf" ]; then
+    #            echo -e "${Error} /boot/grub/grub.conf 找不到，请检查."
+    #            exit 1
+    #        fi
+    #        sed -i 's/^default=.*/default=0/g' /boot/grub/grub.conf
+    #    elif [[ ${version} = "7" ]]; then
+    #        if [ ! -f "/boot/grub2/grub.cfg" ]; then
+    #            echo -e "${Error} /boot/grub2/grub.cfg 找不到，请检查."
+    #            exit 1
+    #        fi
+    #        grub2-set-default 1
+    #    fi
+    #elif [[ "${release}" == "debian" || "${release}" == "ubuntu" ]]; then
+    #    /usr/sbin/update-grub
+    #fi
 }
 
 #############内核管理组件#############
