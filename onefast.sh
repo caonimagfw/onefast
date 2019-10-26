@@ -519,9 +519,6 @@ detele_kernel(){
 }
 
 #更新引导
-BBR_grub(){
-	if [[ "${release}" == "centos" ]]; then
-		echo -e "nothing "
     #    if [[ ${version} = "6" ]]; then
     #        if [ ! -f "/boot/grub/grub.conf" ]; then
     #            echo -e "${Error} /boot/grub/grub.conf 找不到，请检查."
@@ -535,13 +532,17 @@ BBR_grub(){
     #        fi
     #        grub2-set-default 1
     #    fi
+BBR_grub(){
+	if [[ "${release}" == "centos" ]]; then
+		echo -e "nothing "
+
     elif [[ "${release}" == "debian" || "${release}" == "ubuntu" ]]; then
     	echo -e "nothing "
-    #    /usr/sbin/update-grub
+    
     fi
     
 }
-
+#    /usr/sbin/update-grub
 #############内核管理组件#############
 
 
