@@ -432,6 +432,18 @@ optimizing_system(){
 	sed -i '/net.ipv4.tcp_timestamps/d' /etc/sysctl.conf
 	sed -i '/net.ipv4.tcp_max_orphans/d' /etc/sysctl.conf
 	sed -i '/net.ipv4.ip_forward/d' /etc/sysctl.conf
+	sed -i '/net.ipv6.tcp_syncookies/d' /etc/sysctl.conf
+	sed -i '/net.ipv6.tcp_fin_timeout/d' /etc/sysctl.conf
+	sed -i '/net.ipv6.tcp_tw_reuse/d' /etc/sysctl.conf
+	sed -i '/net.ipv6.tcp_max_syn_backlog/d' /etc/sysctl.conf
+	sed -i '/net.ipv6.ip_local_port_range/d' /etc/sysctl.conf
+	sed -i '/net.ipv6.tcp_max_tw_buckets/d' /etc/sysctl.conf
+	sed -i '/net.ipv6.route.gc_timeout/d' /etc/sysctl.conf
+	sed -i '/net.ipv6.tcp_synack_retries/d' /etc/sysctl.conf
+	sed -i '/net.ipv6.tcp_syn_retries/d' /etc/sysctl.conf
+	sed -i '/net.ipv6.tcp_timestamps/d' /etc/sysctl.conf
+	sed -i '/net.ipv6.tcp_max_orphans/d' /etc/sysctl.conf
+	sed -i '/net.ipv6.ip_forward/d' /etc/sysctl.conf
 	echo "fs.file-max = 1000000
 fs.inotify.max_user_instances = 8192
 net.ipv4.tcp_syncookies = 1
