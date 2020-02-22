@@ -162,7 +162,7 @@ installbbr(){
 }
 
 installbbrmod(){
-	kernel_version="4.11.8"
+	kernel_version="5.5.5"
 	if [[ "${release}" == "centos" ]]; then
 		rpm --import http://${github}/bbr/${release}/RPM-GPG-KEY-elrepo.org
 		yum install -y http://${github}/bbr/${release}/${version}/${bit}/kernel-ml-${kernel_version}.rpm
@@ -195,7 +195,7 @@ installbbrmod(){
 
 #安装BBRplus内核
 installbbrplus(){
-	kernel_version="4.14.129"
+	kernel_version="5.5.5"
 	if [[ "${release}" == "centos" ]]; then
 		wget -N --no-check-certificate https://${github}/bbrplus/${release}/${version}/kernel-${kernel_version}-bbrplus.rpm
 		yum install -y kernel-${kernel_version}-bbrplus.rpm
@@ -432,18 +432,8 @@ optimizing_system(){
 	sed -i '/net.ipv4.tcp_timestamps/d' /etc/sysctl.conf
 	sed -i '/net.ipv4.tcp_max_orphans/d' /etc/sysctl.conf
 	sed -i '/net.ipv4.ip_forward/d' /etc/sysctl.conf
-	sed -i '/net.ipv6.tcp_syncookies/d' /etc/sysctl.conf
-	sed -i '/net.ipv6.tcp_fin_timeout/d' /etc/sysctl.conf
-	sed -i '/net.ipv6.tcp_tw_reuse/d' /etc/sysctl.conf
-	sed -i '/net.ipv6.tcp_max_syn_backlog/d' /etc/sysctl.conf
-	sed -i '/net.ipv6.ip_local_port_range/d' /etc/sysctl.conf
-	sed -i '/net.ipv6.tcp_max_tw_buckets/d' /etc/sysctl.conf
 	sed -i '/net.ipv6.route.gc_timeout/d' /etc/sysctl.conf
-	sed -i '/net.ipv6.tcp_synack_retries/d' /etc/sysctl.conf
-	sed -i '/net.ipv6.tcp_syn_retries/d' /etc/sysctl.conf
-	sed -i '/net.ipv6.tcp_timestamps/d' /etc/sysctl.conf
-	sed -i '/net.ipv6.tcp_max_orphans/d' /etc/sysctl.conf
-	sed -i '/net.ipv6.ip_forward/d' /etc/sysctl.conf
+
 	echo "fs.file-max = 1000000
 fs.inotify.max_user_instances = 8192
 net.ipv4.tcp_syncookies = 1
@@ -463,19 +453,8 @@ net.ipv4.tcp_max_orphans = 32768
 net.ipv4.ip_forward = 1
 
 # ipv6
-net.ipv6.tcp_syncookies = 1
-net.ipv6.tcp_fin_timeout = 30
-net.ipv6.tcp_tw_reuse = 1
-net.ipv6.ip_local_port_range = 1024 65000
-net.ipv6.tcp_max_syn_backlog = 16384
-net.ipv6.tcp_max_tw_buckets = 6000
 net.ipv6.route.gc_timeout = 100
-net.ipv6.tcp_syn_retries = 1
-net.ipv6.tcp_synack_retries = 1
-net.ipv6.tcp_timestamps = 0
-net.ipv6.tcp_max_orphans = 32768
-# forward ipv6
-net.ipv6.ip_forward = 1
+
 
 ">>/etc/sysctl.conf
 	sysctl -p
