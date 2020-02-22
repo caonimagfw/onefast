@@ -448,7 +448,24 @@ net.core.netdev_max_backlog = 32768
 net.ipv4.tcp_timestamps = 0
 net.ipv4.tcp_max_orphans = 32768
 # forward ipv4
-net.ipv4.ip_forward = 1">>/etc/sysctl.conf
+net.ipv4.ip_forward = 1
+
+# ipv6
+net.ipv6.tcp_syncookies = 1
+net.ipv6.tcp_fin_timeout = 30
+net.ipv6.tcp_tw_reuse = 1
+net.ipv6.ip_local_port_range = 1024 65000
+net.ipv6.tcp_max_syn_backlog = 16384
+net.ipv6.tcp_max_tw_buckets = 6000
+net.ipv6.route.gc_timeout = 100
+net.ipv6.tcp_syn_retries = 1
+net.ipv6.tcp_synack_retries = 1
+net.ipv6.tcp_timestamps = 0
+net.ipv6.tcp_max_orphans = 32768
+# forward ipv6
+net.ipv6.ip_forward = 1
+
+">>/etc/sysctl.conf
 	sysctl -p
 	echo "*               soft    nofile           1000000
 *               hard    nofile          1000000">/etc/security/limits.conf
