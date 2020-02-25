@@ -195,7 +195,7 @@ installbbrmod(){
 
 #安装BBRplus内核
 installbbrplus(){
-	kernel_version="5.5.5"
+	kernel_version="4.14.129"
 	if [[ "${release}" == "centos" ]]; then
 		wget -N --no-check-certificate https://${github}/bbrplus/${release}/${version}/kernel-${kernel_version}-bbrplus.rpm
 		yum install -y kernel-${kernel_version}-bbrplus.rpm
