@@ -65,7 +65,7 @@ function checkStatus(){
 		kernel_status="BBRplus"
 	elif [[ ${kernel_version} == "3.10.0" || ${kernel_version} == "3.16.0" || ${kernel_version} == "3.2.0" || ${kernel_version} == "4.4.0" || ${kernel_version} == "3.13.0"  || ${kernel_version} == "2.6.32" ]]; then
 		kernel_status="Lotserver"
-	elif [[ ${kernel_version} == "5.5.6" ]];then 
+	elif [[ ${kernel_version} == "5.5.5" ]];then 
 		kernel_status="BBR"
 	else 
 		kernel_status="noinstall"
@@ -125,17 +125,24 @@ function checkStatus(){
 
 #安装BBR内核
 installbbr(){
-	kernel_version="5.5.6"
+	kernel_version="5.5.5"
 	if [[ "${release}" == "centos" ]]; then
 		#rpm --import http://${github}/bbr/${release}/RPM-GPG-KEY-elrepo.org
 		#yum install -y http://${github}/bbr/${release}/${version}/${bit}/kernel-ml-${kernel_version}.rpm
 		#yum remove -y kernel-headers
 		#yum install -y http://${github}/bbr/${release}/${version}/${bit}/kernel-ml-headers-${kernel_version}.rpm
 		#yum install -y http://${github}/bbr/${release}/${version}/${bit}/kernel-ml-devel-${kernel_version}.rpm 
-		sudo rpm --import https://www.elrepo.org/RPM-GPG-KEY-elrepo.org
-		sudo rpm -Uvh https://www.elrepo.org/elrepo-release-7.0-4.el7.elrepo.noarch.rpm
-		sudo yum --enablerepo=elrepo-kernel install kernel-ml -y
-		sudo egrep ^menuentry /etc/grub2.cfg | cut -f 2 -d \'		
+		#sudo rpm --import https://www.elrepo.org/RPM-GPG-KEY-elrepo.org
+		#sudo rpm -Uvh https://www.elrepo.org/elrepo-release-7.0-4.el7.elrepo.noarch.rpm
+		#sudo yum --enablerepo=elrepo-kernel install kernel-ml -y
+		#https://github.com/caonimagfw/onefast/raw/master/bbr/centos/7/x64/kernel-ml-devel-5.5.5-1.el7.elrepo.x86_64.rpm
+		
+		#yum install -y https://github.com/caonimagfw/onefast/raw/master/bbr/centos/7/x64/kernel-ml-devel-5.5.5-1.el7.elrepo.x86_64.rpm
+
+		yum install -y http://${github}/bbr/${release}/${version}/${bit}/kernel-ml-5.5.5-1.el7.elrepo.x86_64.rpm
+		yum install -y http://${github}/bbr/${release}/${version}/${bit}/kernel-ml-headers-5.5.5-1.el7.elrepo.x86_64.rpm
+		yum install -y http://${github}/bbr/${release}/${version}/${bit}/kernel-ml-devel-5.5.5-1.el7.elrepo.x86_64.rpm
+		sudo egrep ^menuentry /etc/grub2.cfg | cut -f 2 -d \'
 		sudo grub2-set-default 0
 	elif [[ "${release}" == "debian" || "${release}" == "ubuntu" ]]; then
 		mkdir bbr && cd bbr
@@ -162,7 +169,7 @@ installbbr(){
 }
 
 installbbrmod(){
-	kernel_version="5.5.6"
+	kernel_version="5.5.5"
 	if [[ "${release}" == "centos" ]]; then
 		rpm --import http://${github}/bbr/${release}/RPM-GPG-KEY-elrepo.org
 		yum install -y http://${github}/bbr/${release}/${version}/${bit}/kernel-ml-${kernel_version}.rpm
@@ -687,22 +694,18 @@ mainControl(){
 	echo
 	echo -e "TCP加速 一键安装管理脚本 ${Red_font_prefix}[v${sh_ver}]${Font_color_suffix}"
 	echo
-	echo -e "${Green_font_prefix}0.${Font_color_suffix} 升级脚本"
 	echo -e "————————————内核管理————————————"
 	echo -e "${Green_font_prefix}1.${Font_color_suffix} 安装 BBR For Centos 7 内核"
-	echo -e "${Green_font_prefix}2.${Font_color_suffix} 安装 BBRmod 内核"
-	echo -e "${Green_font_prefix}3.${Font_color_suffix} 安装 BBRplus 内核" 
-	echo -e "${Green_font_prefix}4.${Font_color_suffix} 安装 Lotserver 内核[锐速]"
+	echo -e "${Green_font_prefix}2.${Font_color_suffix} 安装 BBRplus 内核" 
+	echo -e "${Green_font_prefix}3.${Font_color_suffix} 安装 Lotserver 内核[锐速]"
 	echo -e "————————————加速管理————————————"
-	echo -e "${Green_font_prefix}5.${Font_color_suffix} 开启 BBR 加速"
-	echo -e "${Green_font_prefix}6.${Font_color_suffix} 开启 BBRmod 加速"
-	echo -e "${Green_font_prefix}7.${Font_color_suffix} 开启 BBRmod Pro 加速[不支持部分系统]"
-	echo -e "${Green_font_prefix}8.${Font_color_suffix} 开启 BBRplus 加速"
-	echo -e "${Green_font_prefix}9.${Font_color_suffix} 开启 Lotserver 加速[锐速]"
+	echo -e "${Green_font_prefix}4.${Font_color_suffix} 开启 BBR 加速"
+	echo -e "${Green_font_prefix}5.${Font_color_suffix} 开启 BBRplus 加速"
+	echo -e "${Green_font_prefix}6.${Font_color_suffix} 开启 Lotserver 加速[锐速]"
 	echo -e "————————————杂项管理————————————"
-	echo -e "${Green_font_prefix}10.${Font_color_suffix} 卸载全部加速"
-	echo -e "${Green_font_prefix}11.${Font_color_suffix} 优化系统配置"
-	echo -e "${Green_font_prefix}12.${Font_color_suffix} 退出脚本"
+	echo -e "${Green_font_prefix}7.${Font_color_suffix} 卸载全部加速"
+	echo -e "${Green_font_prefix}8.${Font_color_suffix} 优化系统配置"
+	echo -e "${Green_font_prefix}9.${Font_color_suffix} 退出脚本"
 	echo -e "————————————————————————————————"
 	echo
 
@@ -716,43 +719,31 @@ mainControl(){
 echo
 read -p " 请输入数字 [0-11]:" num
 case "$num" in
-	0)
-	Update_Shell
-	;;
 	1)
 	check_sys_bbr
 	;;
 	2)
-	check_sys_bbrmod
-	;;
-	3)
 	check_sys_bbrplus
 	;;
-	4)
+	3)
 	check_sys_Lotsever
 	;;
-	5)
+	4)
 	startbbr
 	;;
-	6)
-	startbbrmod
-	;;
-	7)
-	startbbrmod_nanqinlang
-	;;
-	8)
+	5)
 	startbbrplus
 	;;
-	9)
+	6)
 	startlotserver
 	;;
-	10)
+	7)
 	remove_all
 	;;
-	11)
+	8)
 	optimizing_system
 	;;
-	12)
+	9)
 	exit 1
 	;;
 	*)
