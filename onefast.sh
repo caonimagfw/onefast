@@ -65,7 +65,7 @@ function checkStatus(){
 		kernel_status="BBRplus"
 	elif [[ ${kernel_version} == "3.10.0" || ${kernel_version} == "3.16.0" || ${kernel_version} == "3.2.0" || ${kernel_version} == "4.4.0" || ${kernel_version} == "3.13.0"  || ${kernel_version} == "2.6.32" ]]; then
 		kernel_status="Lotserver"
-	elif [[ ${kernel_version} == "5.4.11" ]];then 
+	elif [[ ${kernel_version} == "5.5.6" ]];then 
 		kernel_status="BBR"
 	else 
 		kernel_status="noinstall"
@@ -125,7 +125,7 @@ function checkStatus(){
 
 #安装BBR内核
 installbbr(){
-	kernel_version="5.4.11"
+	kernel_version="5.5.6"
 	if [[ "${release}" == "centos" ]]; then
 		#rpm --import http://${github}/bbr/${release}/RPM-GPG-KEY-elrepo.org
 		#yum install -y http://${github}/bbr/${release}/${version}/${bit}/kernel-ml-${kernel_version}.rpm
@@ -162,7 +162,7 @@ installbbr(){
 }
 
 installbbrmod(){
-	kernel_version="4.11.8"
+	kernel_version="5.5.6"
 	if [[ "${release}" == "centos" ]]; then
 		rpm --import http://${github}/bbr/${release}/RPM-GPG-KEY-elrepo.org
 		yum install -y http://${github}/bbr/${release}/${version}/${bit}/kernel-ml-${kernel_version}.rpm
@@ -432,6 +432,8 @@ optimizing_system(){
 	sed -i '/net.ipv4.tcp_timestamps/d' /etc/sysctl.conf
 	sed -i '/net.ipv4.tcp_max_orphans/d' /etc/sysctl.conf
 	sed -i '/net.ipv4.ip_forward/d' /etc/sysctl.conf
+	sed -i '/net.ipv6.route.gc_timeout/d' /etc/sysctl.conf
+
 	echo "fs.file-max = 1000000
 fs.inotify.max_user_instances = 8192
 net.ipv4.tcp_syncookies = 1
@@ -448,7 +450,13 @@ net.core.netdev_max_backlog = 32768
 net.ipv4.tcp_timestamps = 0
 net.ipv4.tcp_max_orphans = 32768
 # forward ipv4
-net.ipv4.ip_forward = 1">>/etc/sysctl.conf
+net.ipv4.ip_forward = 1
+
+# ipv6
+net.ipv6.route.gc_timeout = 100
+
+
+">>/etc/sysctl.conf
 	sysctl -p
 	echo "*               soft    nofile           1000000
 *               hard    nofile          1000000">/etc/security/limits.conf
