@@ -456,6 +456,7 @@ net.core.somaxconn = 32768
 net.core.netdev_max_backlog = 32768
 net.ipv4.tcp_timestamps = 0
 net.ipv4.tcp_max_orphans = 32768
+net.ipv4.tcp_fastopen = 0
 # forward ipv4
 net.ipv4.ip_forward = 1
 
