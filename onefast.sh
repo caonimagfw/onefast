@@ -140,8 +140,8 @@ installbbr(){
 		#yum install -y https://github.com/caonimagfw/onefast/raw/master/bbr/centos/7/x64/kernel-ml-devel-5.5.5-1.el7.elrepo.x86_64.rpm
 
 		yum install -y http://${github}/bbr/${release}/${version}/${bit}/kernel-ml-5.5.5-1.el7.elrepo.x86_64.rpm
-		yum install -y http://${github}/bbr/${release}/${version}/${bit}/kernel-ml-headers-5.5.5-1.el7.elrepo.x86_64.rpm
-		yum install -y http://${github}/bbr/${release}/${version}/${bit}/kernel-ml-devel-5.5.5-1.el7.elrepo.x86_64.rpm
+		#yum install -y http://${github}/bbr/${release}/${version}/${bit}/kernel-ml-headers-5.5.5-1.el7.elrepo.x86_64.rpm
+		#yum install -y http://${github}/bbr/${release}/${version}/${bit}/kernel-ml-devel-5.5.5-1.el7.elrepo.x86_64.rpm
 		sudo egrep ^menuentry /etc/grub2.cfg | cut -f 2 -d \'
 		sudo grub2-set-default 0
 	elif [[ "${release}" == "debian" || "${release}" == "ubuntu" ]]; then
