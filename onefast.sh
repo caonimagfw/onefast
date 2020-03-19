@@ -84,7 +84,14 @@ function checkStatus(){
 		fi
 	elif [[ ${kernel_status} == "BBR" ]]; then
 		run_status=`grep "net.ipv4.tcp_congestion_control" /etc/sysctl.conf | awk -F "=" '{print $2}'`
-		if [[ ${run_status} == "bbr" ]]; then
+		if [[ ${run_status} == "hybla" ]]; then
+			run_status=`lsmod | grep "hybla" | awk '{print $1}'`
+			if [[ ${run_status} == "tcp_hybla" ]]; then
+				run_status="hybla启动成功"
+			else 
+				run_status="hybla启动失败"
+			fi
+		elif [[ ${run_status} == "bbr" ]]; then
 			run_status=`lsmod | grep "bbr" | awk '{print $1}'`
 			if [[ ${run_status} == "tcp_bbr" ]]; then
 				run_status="BBR启动成功"
@@ -110,7 +117,14 @@ function checkStatus(){
 		fi
 	elif [[ ${kernel_status} == "BBRplus" ]]; then
 		run_status=`grep "net.ipv4.tcp_congestion_control" /etc/sysctl.conf | awk -F "=" '{print $2}'`
-		if [[ ${run_status} == "bbrplus" ]]; then
+		if [[ ${run_status} == "hybla" ]]; then
+			run_status=`lsmod | grep "hybla" | awk '{print $1}'`
+			if [[ ${run_status} == "tcp_hybla" ]]; then
+				run_status="hybla启动成功"
+			else 
+				run_status="hybla启动失败"
+			fi
+		elif [[ ${run_status} == "bbrplus" ]]; then
 			run_status=`lsmod | grep "bbrplus" | awk '{print $1}'`
 			if [[ ${run_status} == "tcp_bbrplus" ]]; then
 				run_status="BBRplus启动成功"
@@ -272,6 +286,28 @@ startbbr(){
 	sysctl -p
 	echo -e "${Info}BBR启动成功！"
 }
+startbbrV2(){
+	remove_all
+	echo "net.core.default_qdisc=fq" >> /etc/sysctl.conf
+	echo "net.ipv4.tcp_congestion_control=bbr" >> /etc/sysctl.conf
+	sysctl -p
+	echo -e "${Info}BBR启动成功！"
+	optimizing_system
+}
+
+#启用KVM加速
+starthybla(){
+	remove_all
+	cat "#!/bin/sh\n/sbin/modprobe tcp_hybla" > /etc/sysconfig/modules/hybla.modules
+	chmod +x /etc/sysconfig/modules/hybla.modules
+
+	echo "net.core.default_qdisc=fq" >> /etc/sysctl.conf
+	echo "net.ipv4.tcp_congestion_control=hybla" >> /etc/sysctl.conf
+	sysctl -p
+	echo -e "${Info}hybla启动成功！"
+	optimizing_system
+}
+
 
 #编译并启用BBR魔改
 startbbrmod(){
@@ -358,8 +394,19 @@ startbbrplus(){
 	echo "net.ipv4.tcp_congestion_control=bbrplus" >> /etc/sysctl.conf
 	sysctl -p
 	echo -e "${Info}BBRplus启动成功！"
+
 }
 
+#启用BBRplus
+startbbrplusV2(){
+	remove_all
+	echo "net.core.default_qdisc=fq" >> /etc/sysctl.conf
+	echo "net.ipv4.tcp_congestion_control=bbrplus" >> /etc/sysctl.conf
+	sysctl -p
+	echo -e "${Info}BBRplus启动成功！"
+	optimizing_system
+
+}
 #启用Lotserver
 startlotserver(){
 	remove_all
@@ -416,6 +463,10 @@ remove_all(){
 		wget --no-check-certificate -O appex.sh https://raw.githubusercontent.com/0oVicero0/serverSpeeder_Install/master/appex.sh && chmod +x appex.sh && bash appex.sh uninstall
 		rm -f appex.sh
 	fi
+	if [[ -e /etc/sysconfig/modules/hybla.modules ]]; then
+		rm -f /etc/sysconfig/modules/hybla.modules
+	fi
+	
 	clear
 	echo -e "${Info}:清除加速完成。"
 	sleep 1s
@@ -449,7 +500,7 @@ net.ipv4.tcp_tw_reuse = 1
 net.ipv4.ip_local_port_range = 1024 65000
 net.ipv4.tcp_max_syn_backlog = 16384
 net.ipv4.tcp_max_tw_buckets = 6000
-net.ipv4.route.gc_timeout = 100
+net.ipv4.route.gc_timeout = 150
 net.ipv4.tcp_syn_retries = 1
 net.ipv4.tcp_synack_retries = 1
 net.core.somaxconn = 32768
@@ -461,7 +512,7 @@ net.ipv4.tcp_fastopen = 0
 net.ipv4.ip_forward = 1
 
 # ipv6
-net.ipv6.route.gc_timeout = 100
+net.ipv6.route.gc_timeout = 150
 
 
 ">>/etc/sysctl.conf
@@ -730,10 +781,10 @@ case "$num" in
 	check_sys_Lotsever
 	;;
 	4)
-	startbbr
+	startbbrV2
 	;;
 	5)
-	startbbrplus
+	startbbrplusV2
 	;;
 	6)
 	startlotserver
@@ -741,12 +792,12 @@ case "$num" in
 	7)
 	remove_all
 	;;
-	8)
-	optimizing_system
-	;;
 	9)
 	exit 1
 	;;
+	99)
+	starthybla
+	;;	
 	*)
 	clear
 	echo -e "${Error}:请输入正确数字 [0-12]"
