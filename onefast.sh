@@ -58,6 +58,7 @@ function checkReleaseVersion(){
 }
 
 ####检查加速状态####
+# elif [[ ${kernel_version} == "5.5.5" ]];then 
 function checkStatus(){
 	kernel_version=`uname -r | awk -F "-" '{print $1}'`
 	kernel_version_full=`uname -r`
@@ -65,7 +66,8 @@ function checkStatus(){
 		kernel_status="BBRplus"
 	elif [[ ${kernel_version} == "3.10.0" || ${kernel_version} == "3.16.0" || ${kernel_version} == "3.2.0" || ${kernel_version} == "4.4.0" || ${kernel_version} == "3.13.0"  || ${kernel_version} == "2.6.32" ]]; then
 		kernel_status="Lotserver"
-	elif [[ ${kernel_version} == "5.5.5" ]];then 
+	
+	elif [[ ${kernel_version} =~ ^5.5.*$ ]];then 
 		kernel_status="BBR"
 	else 
 		kernel_status="noinstall"
@@ -153,11 +155,28 @@ installbbr(){
 		
 		#yum install -y https://github.com/caonimagfw/onefast/raw/master/bbr/centos/7/x64/kernel-ml-devel-5.5.5-1.el7.elrepo.x86_64.rpm
 
-		yum install -y http://${github}/bbr/${release}/${version}/${bit}/kernel-ml-5.5.5-1.el7.elrepo.x86_64.rpm
+		#yum install -y http://${github}/bbr/${release}/${version}/${bit}/kernel-ml-5.5.5-1.el7.elrepo.x86_64.rpm
 		#yum install -y http://${github}/bbr/${release}/${version}/${bit}/kernel-ml-headers-5.5.5-1.el7.elrepo.x86_64.rpm
 		#yum install -y http://${github}/bbr/${release}/${version}/${bit}/kernel-ml-devel-5.5.5-1.el7.elrepo.x86_64.rpm
+		
+		#载入公钥
+		rpm --import https://www.elrepo.org/RPM-GPG-KEY-elrepo.org
+
+		#升级安装ELRepo
+		rpm -Uvh https://www.elrepo.org/elrepo-release-7.0-4.el7.elrepo.noarch.rpm
+
+		#载入elrepo-kernel元数据
+		yum --disablerepo=\* --enablerepo=elrepo-kernel repolist
+
+		#查看可用的rpm包
+		yum --disablerepo=\* --enablerepo=elrepo-kernel list kernel*
+
+		#安装最新版本的kernel
+		yum --disablerepo=\* --enablerepo=elrepo-kernel install kernel-ml.x86_64  -y
+
 		sudo egrep ^menuentry /etc/grub2.cfg | cut -f 2 -d \'
 		sudo grub2-set-default 0
+		startbbrV2
 	elif [[ "${release}" == "debian" || "${release}" == "ubuntu" ]]; then
 		mkdir bbr && cd bbr
 		wget http://security.debian.org/debian-security/pool/updates/main/o/openssl/libssl1.0.0_1.0.1t-1+deb8u10_amd64.deb
@@ -292,7 +311,7 @@ startbbrV2(){
 	echo "net.ipv4.tcp_congestion_control=bbr" >> /etc/sysctl.conf
 	sysctl -p
 	echo -e "${Info}BBR启动成功！"
-	optimizing_system
+	optimizing_system_v2
 }
 
 #启用KVM加速
@@ -528,6 +547,56 @@ net.ipv6.route.gc_timeout = 150
 	fi
 }
 
+
+#优化系统配置
+optimizing_system_v2(){
+	sed -i '/fs.file-max/d' /etc/sysctl.conf
+	sed -i '/fs.inotify.max_user_instances/d' /etc/sysctl.conf
+	sed -i '/net.ipv4.tcp_syncookies/d' /etc/sysctl.conf
+	sed -i '/net.ipv4.tcp_fin_timeout/d' /etc/sysctl.conf
+	sed -i '/net.ipv4.tcp_tw_reuse/d' /etc/sysctl.conf
+	sed -i '/net.ipv4.tcp_max_syn_backlog/d' /etc/sysctl.conf
+	sed -i '/net.ipv4.ip_local_port_range/d' /etc/sysctl.conf
+	sed -i '/net.ipv4.tcp_max_tw_buckets/d' /etc/sysctl.conf
+	sed -i '/net.ipv4.route.gc_timeout/d' /etc/sysctl.conf
+	sed -i '/net.ipv4.tcp_synack_retries/d' /etc/sysctl.conf
+	sed -i '/net.ipv4.tcp_syn_retries/d' /etc/sysctl.conf
+	sed -i '/net.core.somaxconn/d' /etc/sysctl.conf
+	sed -i '/net.core.netdev_max_backlog/d' /etc/sysctl.conf
+	sed -i '/net.ipv4.tcp_timestamps/d' /etc/sysctl.conf
+	sed -i '/net.ipv4.tcp_max_orphans/d' /etc/sysctl.conf
+	sed -i '/net.ipv4.ip_forward/d' /etc/sysctl.conf
+	sed -i '/net.ipv6.route.gc_timeout/d' /etc/sysctl.conf
+
+	echo "fs.file-max = 1000000
+fs.inotify.max_user_instances = 8192
+net.ipv4.tcp_syncookies = 1
+net.ipv4.tcp_fin_timeout = 30
+net.ipv4.tcp_tw_reuse = 1
+net.ipv4.ip_local_port_range = 1024 65000
+net.ipv4.tcp_max_syn_backlog = 16384
+net.ipv4.tcp_max_tw_buckets = 6000
+net.ipv4.route.gc_timeout = 150
+net.ipv4.tcp_syn_retries = 1
+net.ipv4.tcp_synack_retries = 1
+net.core.somaxconn = 32768
+net.core.netdev_max_backlog = 32768
+net.ipv4.tcp_timestamps = 0
+net.ipv4.tcp_max_orphans = 32768
+net.ipv4.tcp_fastopen = 0
+# forward ipv4
+net.ipv4.ip_forward = 1
+
+# ipv6
+net.ipv6.route.gc_timeout = 150
+
+
+">>/etc/sysctl.conf
+	sysctl -p
+	echo "*               soft    nofile           1000000
+*               hard    nofile          1000000">/etc/security/limits.conf
+	echo "ulimit -SHn 1000000">>/etc/profile
+}
 #更新脚本
 Update_Shell(){
 	echo -e "当前版本为 [ ${sh_ver} ]，开始检测最新版本..."
@@ -769,7 +838,7 @@ mainControl(){
 		
 	fi
 echo
-read -p " 请输入数字 [0-11]:" num
+read -p " 请输入数字 [0-9]:" num
 case "$num" in
 	1)
 	check_sys_bbr
