@@ -624,19 +624,19 @@ Update_Shell(){
 #删除多余内核
 detele_kernel(){
 	if [[ "${release}" == "centos" ]]; then
-		rpm_total=`rpm -qa | grep kernel | grep -v "${kernel_version}" | grep -v "noarch" | wc -l`
-		if [ "${rpm_total}" > "1" ]; then
-			echo -e "检测到 ${rpm_total} 个其余内核，开始卸载..."
-			for((integer = 1; integer <= ${rpm_total}; integer++)); do
-				rpm_del=`rpm -qa | grep kernel | grep -v "${kernel_version}" | grep -v "noarch" | head -${integer}`
-				echo -e "开始卸载 ${rpm_del} 内核..."
-				rpm --nodeps -e ${rpm_del}
-				echo -e "卸载 ${rpm_del} 内核卸载完成，继续..."
-			done
-			echo -e "内核卸载完毕，继续..."
-		else
-			echo -e " 检测到 内核 数量不正确，请检查 !" && exit 1
-		fi
+		#rpm_total=`rpm -qa | grep kernel | grep -v "${kernel_version}" | grep -v "noarch" | wc -l`
+		#if [ "${rpm_total}" > "1" ]; then
+		#	echo -e "检测到 ${rpm_total} 个其余内核，开始卸载..."
+		#	for((integer = 1; integer <= ${rpm_total}; integer++)); do
+		#		rpm_del=`rpm -qa | grep kernel | grep -v "${kernel_version}" | grep -v "noarch" | head -${integer}`
+		#		echo -e "开始卸载 ${rpm_del} 内核..."
+		#		rpm --nodeps -e ${rpm_del}
+		#		echo -e "卸载 ${rpm_del} 内核卸载完成，继续..."
+		#	done
+		#	echo -e "内核卸载完毕，继续..."
+		#else
+		#	echo -e " 检测到 内核 数量不正确，请检查 !" && exit 1
+		#fi
 	elif [[ "${release}" == "debian" || "${release}" == "ubuntu" ]]; then
 		deb_total=`dpkg -l | grep linux-image | awk '{print $2}' | grep -v "${kernel_version}" | wc -l`
 		if [ "${deb_total}" > "1" ]; then
