@@ -622,8 +622,7 @@ Update_Shell(){
 #############内核管理组件#############
 
 #删除多余内核
-detele_kernel(){
-	if [[ "${release}" == "centos" ]]; then
+	#if [[ "${release}" == "centos" ]]; then
 		#rpm_total=`rpm -qa | grep kernel | grep -v "${kernel_version}" | grep -v "noarch" | wc -l`
 		#if [ "${rpm_total}" > "1" ]; then
 		#	echo -e "检测到 ${rpm_total} 个其余内核，开始卸载..."
@@ -637,7 +636,9 @@ detele_kernel(){
 		#else
 		#	echo -e " 检测到 内核 数量不正确，请检查 !" && exit 1
 		#fi
-	elif [[ "${release}" == "debian" || "${release}" == "ubuntu" ]]; then
+detele_kernel(){
+
+	if [[ "${release}" == "debian" || "${release}" == "ubuntu" ]]; then
 		deb_total=`dpkg -l | grep linux-image | awk '{print $2}' | grep -v "${kernel_version}" | wc -l`
 		if [ "${deb_total}" > "1" ]; then
 			echo -e "检测到 ${deb_total} 个其余内核，开始卸载..."
