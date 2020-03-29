@@ -250,6 +250,8 @@ installbbrplus(){
 	fi
 	detele_kernel
 	BBR_grub
+	startbbrplusV2
+	optimizing_system_v2
 	echo -e "${Tip} 重启VPS后，请重新运行脚本开启${Red_font_prefix}BBRplus${Font_color_suffix}"
 	stty erase '^H' && read -p "需要重启VPS后，才能开启BBRplus，是否现在重启 ? [Y/n] :" yn
 	[ -z "${yn}" ] && yn="y"
@@ -423,7 +425,7 @@ startbbrplusV2(){
 	echo "net.ipv4.tcp_congestion_control=bbrplus" >> /etc/sysctl.conf
 	sysctl -p
 	echo -e "${Info}BBRplus启动成功！"
-	optimizing_system
+	
 
 }
 #启用Lotserver
@@ -862,6 +864,9 @@ case "$num" in
 	7)
 	remove_all
 	;;
+	8)
+	optimizing_system_v2
+	;;	
 	9)
 	exit 1
 	;;
