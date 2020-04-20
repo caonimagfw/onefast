@@ -448,6 +448,9 @@ startlotserver(){
 #卸载全部加速
 remove_all(){
 	rm -rf bbrmod
+	sed -i '/net.core.default_qdisc/d' /etc/sysctl.conf
+	sed -i '/net.ipv4.tcp_congestion_control/d' /etc/sysctl.conf
+
 	sed -i '/fs.file-max/d' /etc/sysctl.conf
 	sed -i '/fs.inotify.max_user_instances/d' /etc/sysctl.conf
 	sed -i '/net.ipv4.tcp_syncookies/d' /etc/sysctl.conf
