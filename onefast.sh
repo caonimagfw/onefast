@@ -426,7 +426,7 @@ startbbrplusV2(){
 	optimizing_system_v2	
 	sysctl -p
 	sysctl -w net.ipv4.tcp_congestion_control=bbrplus
-	echo -e "${Info}BBRplus启动成功并已优化参数！"
+	echo -e "${Info}BBRplus启动成功并已优化参数！" 
 	sysctl net.ipv4.tcp_congestion_control
 	
 
