@@ -423,7 +423,7 @@ startbbrplusV2(){
 	remove_all
 	echo "net.core.default_qdisc=fq" >> /etc/sysctl.conf
 	echo "net.ipv4.tcp_congestion_control=bbrplus" >> /etc/sysctl.conf
-	optimizing_system_v2	
+	#optimizing_system_v2	
 	sysctl -p
 	sysctl -w net.ipv4.tcp_congestion_control=bbrplus
 	echo -e "${Info}BBRplus启动成功并已优化参数！" 
