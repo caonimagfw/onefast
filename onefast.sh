@@ -520,27 +520,42 @@ optimizing_system(){
 	sed -i '/net.ipv4.ip_forward/d' /etc/sysctl.conf
 	sed -i '/net.ipv6.route.gc_timeout/d' /etc/sysctl.conf
 
-	echo "fs.file-max = 1000000
+	echo "
+fs.file-max = 1024000
 fs.inotify.max_user_instances = 8192
-net.ipv4.tcp_syncookies = 1
+net.core.netdev_max_backlog = 262144
+net.core.rmem_default = 8388608
+net.core.rmem_max = 67108864
+net.core.somaxconn = 65535
+net.core.wmem_default = 8388608
+net.core.wmem_max = 67108864
+net.ipv4.ip_local_port_range = 10240 65000
+net.ipv4.route.gc_timeout = 100
+net.ipv4.tcp_fastopen = 3
 net.ipv4.tcp_fin_timeout = 30
+net.ipv4.tcp_keepalive_time = 1200
+net.ipv4.tcp_max_orphans = 3276800
+net.ipv4.tcp_max_syn_backlog = 65536
+net.ipv4.tcp_max_tw_buckets = 60000
+net.ipv4.tcp_mem = 94500000 915000000 927000000
+net.ipv4.tcp_mtu_probing = 1
+net.ipv4.tcp_rmem = 4096 87380 67108864
+net.ipv4.tcp_sack = 1
+net.ipv4.tcp_syn_retries = 2
+net.ipv4.tcp_synack_retries = 2
+net.ipv4.tcp_syncookies = 1
+net.ipv4.tcp_timestamps = 1
 net.ipv4.tcp_tw_reuse = 1
-net.ipv4.ip_local_port_range = 1024 65000
-net.ipv4.tcp_max_syn_backlog = 16384
-net.ipv4.tcp_max_tw_buckets = 6000
-net.ipv4.route.gc_timeout = 150
-net.ipv4.tcp_syn_retries = 1
-net.ipv4.tcp_synack_retries = 1
-net.core.somaxconn = 32768
-net.core.netdev_max_backlog = 32768
-net.ipv4.tcp_timestamps = 0
-net.ipv4.tcp_max_orphans = 32768
-net.ipv4.tcp_fastopen = 0
-# forward ipv4
+net.ipv4.tcp_window_scaling = 1
+net.ipv4.tcp_wmem = 4096 65536 67108864
+net.netfilter.nf_conntrack_max = 6553500
+net.netfilter.nf_conntrack_tcp_timeout_close_wait = 60
+net.netfilter.nf_conntrack_tcp_timeout_established = 3600
+net.netfilter.nf_conntrack_tcp_timeout_fin_wait = 120
+net.netfilter.nf_conntrack_tcp_timeout_time_wait = 120
+net.nf_conntrack_max = 6553500
 net.ipv4.ip_forward = 1
 
-# ipv6
-net.ipv6.route.gc_timeout = 150
 
 
 ">>/etc/sysctl.conf
@@ -560,24 +575,43 @@ net.ipv6.route.gc_timeout = 150
 #优化系统配置
 optimizing_system_v2(){
 	echo "
-fs.file-max = 51200
+fs.file-max = 1024000
+fs.inotify.max_user_instances = 8192
+net.core.netdev_max_backlog = 262144
+net.core.rmem_default = 8388608
 net.core.rmem_max = 67108864
+net.core.somaxconn = 65535
+net.core.wmem_default = 8388608
 net.core.wmem_max = 67108864
-net.core.rmem_default = 65536
-net.core.wmem_default = 65536
-net.core.netdev_max_backlog = 4096
-net.core.somaxconn = 4096
-net.ipv4.tcp_syncookies = 1
-net.ipv4.tcp_tw_reuse = 1
+net.ipv4.ip_local_port_range = 10240 65000
+net.ipv4.route.gc_timeout = 100
+net.ipv4.tcp_fastopen = 3
 net.ipv4.tcp_fin_timeout = 30
 net.ipv4.tcp_keepalive_time = 1200
-net.ipv4.ip_local_port_range = 10000 65000
-net.ipv4.tcp_max_syn_backlog = 4096
-net.ipv4.tcp_max_tw_buckets = 5000
-net.ipv4.tcp_fastopen = 0
-net.ipv4.tcp_rmem = 4096 87380 67108864
-net.ipv4.tcp_wmem = 4096 65536 67108864
+net.ipv4.tcp_max_orphans = 3276800
+net.ipv4.tcp_max_syn_backlog = 65536
+net.ipv4.tcp_max_tw_buckets = 60000
+net.ipv4.tcp_mem = 94500000 915000000 927000000
 net.ipv4.tcp_mtu_probing = 1
+net.ipv4.tcp_rmem = 4096 87380 67108864
+net.ipv4.tcp_sack = 1
+net.ipv4.tcp_syn_retries = 2
+net.ipv4.tcp_synack_retries = 2
+net.ipv4.tcp_syncookies = 1
+net.ipv4.tcp_timestamps = 1
+net.ipv4.tcp_tw_reuse = 1
+net.ipv4.tcp_window_scaling = 1
+net.ipv4.tcp_wmem = 4096 65536 67108864
+net.netfilter.nf_conntrack_max = 6553500
+net.netfilter.nf_conntrack_tcp_timeout_close_wait = 60
+net.netfilter.nf_conntrack_tcp_timeout_established = 3600
+net.netfilter.nf_conntrack_tcp_timeout_fin_wait = 120
+net.netfilter.nf_conntrack_tcp_timeout_time_wait = 120
+net.nf_conntrack_max = 6553500
+net.ipv4.ip_forward = 1
+net.ipv4.tcp_congestion_control = bbrplus
+net.core.default_qdisc=fq
+
 
 
 ">>/etc/sysctl.conf
