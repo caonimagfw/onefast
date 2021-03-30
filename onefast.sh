@@ -23,6 +23,20 @@ Info="${Green_font_prefix}[信息]${Font_color_suffix}"
 Error="${Red_font_prefix}[错误]${Font_color_suffix}"
 Tip="${Green_font_prefix}[注意]${Font_color_suffix}"
 
+# install tools 
+if ! command -v unar &> /dev/null
+then
+    yum -y install epel-release && yum -y install unar
+fi
+
+sshd_flag=`systemctl is-enabled sshd.service`
+
+if [[ ${sshd_flag} == "enabled" ]]; then 
+	echo "alread enable sshd"
+else 
+	systemctl enable sshd
+fi 
+
 ####检查系统类型####
 function checkRelease(){
 	if [[ -f /etc/redhat-release ]]; then
@@ -62,17 +76,18 @@ function checkReleaseVersion(){
 function checkStatus(){
 	kernel_version=`uname -r | awk -F "-" '{print $1}'`
 	kernel_version_full=`uname -r`
+	
 	if [[ ${kernel_version_full} == "4.14.129-bbrplus" ]]; then
 		kernel_status="BBRplus"
 	elif [[ ${kernel_version} == "3.10.0" || ${kernel_version} == "3.16.0" || ${kernel_version} == "3.2.0" || ${kernel_version} == "4.4.0" || ${kernel_version} == "3.13.0"  || ${kernel_version} == "2.6.32" ]]; then
 		kernel_status="Lotserver"
 	
-	elif [[ ${kernel_version} =~ ^5.5.*$ ]];then 
-		kernel_status="BBR"
+	elif [[ ${kernel_version} == "5.10.0" ]];then 
+		kernel_status="BBRV2"
 	else 
 		kernel_status="noinstall"
 	fi
-
+	
 	if [[ ${kernel_status} == "Lotserver" ]]; then
 		if [[ -e /appex/bin/serverSpeeder.sh ]]; then
 			run_status=`bash /appex/bin/serverSpeeder.sh status | grep "ServerSpeeder" | awk  '{print $3}'`
@@ -84,7 +99,9 @@ function checkStatus(){
 		else 
 			run_status="未安装加速模块"
 		fi
-	elif [[ ${kernel_status} == "BBR" ]]; then
+	elif [[ ${kernel_status} == "BBRV2" ]]; then
+		# echo ${kernel_status}
+		# read -p 'Press [Enter] key to continue...'
 		run_status=`grep "net.ipv4.tcp_congestion_control" /etc/sysctl.conf | awk -F "=" '{print $2}'`
 		if [[ ${run_status} == "hybla" ]]; then
 			run_status=`lsmod | grep "hybla" | awk '{print $1}'`
@@ -93,12 +110,12 @@ function checkStatus(){
 			else 
 				run_status="hybla启动失败"
 			fi
-		elif [[ ${run_status} == "bbr" ]]; then
+		elif [[ ${run_status} == "bbr2" ]]; then
 			run_status=`lsmod | grep "bbr" | awk '{print $1}'`
-			if [[ ${run_status} == "tcp_bbr" ]]; then
-				run_status="BBR启动成功"
+			if [[ ${run_status} == "tcp_bbr2" ]]; then
+				run_status="BBR V2 启动成功"
 			else 
-				run_status="BBR启动失败"
+				run_status="BBR V2 启动失败"
 			fi
 		elif [[ ${run_status} == "tsunami" ]]; then
 			run_status=`lsmod | grep "tsunami" | awk '{print $1}'`
@@ -141,24 +158,18 @@ function checkStatus(){
 
 #安装BBR内核
 installbbr(){
-	kernel_version="5.5.5"
+	kernel_version="5.10.0"
 	if [[ "${release}" == "centos" ]]; then
-		#rpm --import http://${github}/bbr/${release}/RPM-GPG-KEY-elrepo.org
-		#yum install -y http://${github}/bbr/${release}/${version}/${bit}/kernel-ml-${kernel_version}.rpm
-		#yum remove -y kernel-headers
-		#yum install -y http://${github}/bbr/${release}/${version}/${bit}/kernel-ml-headers-${kernel_version}.rpm
-		#yum install -y http://${github}/bbr/${release}/${version}/${bit}/kernel-ml-devel-${kernel_version}.rpm 
-		#sudo rpm --import https://www.elrepo.org/RPM-GPG-KEY-elrepo.org
-		#sudo rpm -Uvh https://www.elrepo.org/elrepo-release-7.0-4.el7.elrepo.noarch.rpm
-		#sudo yum --enablerepo=elrepo-kernel install kernel-ml -y
-		#https://github.com/caonimagfw/onefast/raw/master/bbr/centos/7/x64/kernel-ml-devel-5.5.5-1.el7.elrepo.x86_64.rpm
 		
-		#yum install -y https://github.com/caonimagfw/onefast/raw/master/bbr/centos/7/x64/kernel-ml-devel-5.5.5-1.el7.elrepo.x86_64.rpm
+		# wget https://github.com/caonimagfw/onefast/raw/master/bbr/centos/5.10.0.x86-64/5.10.0.x86-64.part1.rar
+		# wget https://github.com/caonimagfw/onefast/raw/master/bbr/centos/5.10.0.x86-64/5.10.0.x86-64.part2.rar
+		# wget https://github.com/caonimagfw/onefast/raw/master/bbr/centos/5.10.0.x86-64/5.10.0.x86-64.part3.rar
+		# wget https://github.com/caonimagfw/onefast/raw/master/bbr/centos/5.10.0.x86-64/5.10.0.x86-64.part4.rar
+		# wget https://github.com/caonimagfw/onefast/raw/master/bbr/centos/5.10.0.x86-64/5.10.0.x86-64.part5.rar
+		# unar -p *** -D 5.10.0.x86-64.part1.rar && rm -rf 5.10.0.x86-64.p*
+		# yum install -y /root/5.10.0.x86-64/kernel-5.10.0.x86_64.rpm
+		
 
-		#yum install -y http://${github}/bbr/${release}/${version}/${bit}/kernel-ml-5.5.5-1.el7.elrepo.x86_64.rpm
-		#yum install -y http://${github}/bbr/${release}/${version}/${bit}/kernel-ml-headers-5.5.5-1.el7.elrepo.x86_64.rpm
-		#yum install -y http://${github}/bbr/${release}/${version}/${bit}/kernel-ml-devel-5.5.5-1.el7.elrepo.x86_64.rpm
-		
 		#载入公钥
 		rpm --import https://www.elrepo.org/RPM-GPG-KEY-elrepo.org
 
@@ -169,14 +180,12 @@ installbbr(){
 		yum --disablerepo=\* --enablerepo=elrepo-kernel repolist
 
 		#查看可用的rpm包
-		yum --disablerepo=\* --enablerepo=elrepo-kernel list kernel*
+		# yum --disablerepo=\* --enablerepo=elrepo-kernel list kernel*
 
 		#安装最新版本的kernel
-		yum --disablerepo=\* --enablerepo=elrepo-kernel install kernel-ml.x86_64  -y
-
+		# yum --disablerepo=\* --enablerepo=elrepo-kernel install kernel-ml.x86_64  -y
 		sudo egrep ^menuentry /etc/grub2.cfg | cut -f 2 -d \'
 		sudo grub2-set-default 0
-		startbbrV2
 	elif [[ "${release}" == "debian" || "${release}" == "ubuntu" ]]; then
 		mkdir bbr && cd bbr
 		wget http://security.debian.org/debian-security/pool/updates/main/o/openssl/libssl1.0.0_1.0.1t-1+deb8u10_amd64.deb
@@ -192,8 +201,8 @@ installbbr(){
 	fi
 	detele_kernel_for_bbr
 	BBR_grub
-	echo -e "${Tip} 重启VPS后，请重新运行脚本开启${Red_font_prefix}BBR${Font_color_suffix}"
-	stty erase '^H' && read -p "需要重启VPS后，才能开启BBR，是否现在重启 ? [Y/n] :" yn
+	echo -e "${Tip} 重启VPS后，请重新运行脚本开启${Red_font_prefix}BBR V2${Font_color_suffix}"
+	stty erase '^H' && read -p "需要重启VPS后，才能开启BBR V2，是否现在重启 ? [Y/n] :" yn
 	[ -z "${yn}" ] && yn="y"
 	if [[ $yn == [Yy] ]]; then
 		echo -e "${Info} VPS 重启中..."
@@ -310,9 +319,9 @@ startbbr(){
 startbbrV2(){
 	remove_all
 	echo "net.core.default_qdisc=fq" >> /etc/sysctl.conf
-	echo "net.ipv4.tcp_congestion_control=bbr" >> /etc/sysctl.conf
+	echo "net.ipv4.tcp_congestion_control=bbr2" >> /etc/sysctl.conf
 	sysctl -p
-	echo -e "${Info}BBR启动成功！"
+	echo -e "${Info}BBR V2 启动成功！"
 	optimizing_system_v2
 }
 
@@ -574,6 +583,7 @@ net.ipv4.ip_forward = 1
 
 #优化系统配置
 optimizing_system_v2(){
+	modprobe ip_conntrack
 	echo "
 fs.file-max = 1024000
 fs.inotify.max_user_instances = 8192
@@ -609,9 +619,6 @@ net.netfilter.nf_conntrack_tcp_timeout_fin_wait = 120
 net.netfilter.nf_conntrack_tcp_timeout_time_wait = 120
 net.nf_conntrack_max = 6553500
 net.ipv4.ip_forward = 1
-net.ipv4.tcp_congestion_control = bbrplus
-net.core.default_qdisc=fq
-
 
 
 ">>/etc/sysctl.conf
@@ -677,7 +684,7 @@ detele_kernel_for_bbrplus(){
 }
 
 detele_kernel_for_bbr(){
-	kernel_version="5.5"
+	kernel_version="5.10.0"
 	if [[ "${release}" == "centos" ]]; then
 		rpm_total=`rpm -qa | grep kernel | grep -v "${kernel_version}" | grep -v "noarch" | wc -l`
 		if [ "${rpm_total}" > "1" ]; then
@@ -905,11 +912,11 @@ mainControl(){
 	echo -e "TCP加速 一键安装管理脚本 ${Red_font_prefix}[v${sh_ver}]${Font_color_suffix}"
 	echo
 	echo -e "————————————内核管理————————————"
-	echo -e "${Green_font_prefix}1.${Font_color_suffix} 安装 BBR For Centos 7 内核"
+	echo -e "${Green_font_prefix}1.${Font_color_suffix} 安装 BBR V2 For Centos 7 内核"
 	echo -e "${Green_font_prefix}2.${Font_color_suffix} 安装 BBRplus 内核" 
 	echo -e "${Green_font_prefix}3.${Font_color_suffix} 安装 Lotserver 内核[锐速]"
 	echo -e "————————————加速管理————————————"
-	echo -e "${Green_font_prefix}4.${Font_color_suffix} 开启 BBR 加速"
+	echo -e "${Green_font_prefix}4.${Font_color_suffix} 开启 BBR V2 加速"
 	echo -e "${Green_font_prefix}5.${Font_color_suffix} 开启 BBRplus 加速"
 	echo -e "${Green_font_prefix}6.${Font_color_suffix} 开启 Lotserver 加速[锐速]"
 	echo -e "————————————杂项管理————————————"
