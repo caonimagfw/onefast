@@ -161,31 +161,31 @@ installbbr(){
 	kernel_version="5.10.0"
 	if [[ "${release}" == "centos" ]]; then
 		
-		# wget https://github.com/caonimagfw/onefast/raw/master/bbr/centos/5.10.0.x86-64/5.10.0.x86-64.part1.rar
-		# wget https://github.com/caonimagfw/onefast/raw/master/bbr/centos/5.10.0.x86-64/5.10.0.x86-64.part2.rar
-		# wget https://github.com/caonimagfw/onefast/raw/master/bbr/centos/5.10.0.x86-64/5.10.0.x86-64.part3.rar
-		# wget https://github.com/caonimagfw/onefast/raw/master/bbr/centos/5.10.0.x86-64/5.10.0.x86-64.part4.rar
-		# wget https://github.com/caonimagfw/onefast/raw/master/bbr/centos/5.10.0.x86-64/5.10.0.x86-64.part5.rar
-		# unar -p *** -D 5.10.0.x86-64.part1.rar && rm -rf 5.10.0.x86-64.p*
-		# yum install -y /root/5.10.0.x86-64/kernel-5.10.0.x86_64.rpm
+		wget https://github.com/caonimagfw/onefast/raw/master/bbr/centos/5.10.0.x86-64/5.10.0.x86-64.part1.rar
+		wget https://github.com/caonimagfw/onefast/raw/master/bbr/centos/5.10.0.x86-64/5.10.0.x86-64.part2.rar
+		wget https://github.com/caonimagfw/onefast/raw/master/bbr/centos/5.10.0.x86-64/5.10.0.x86-64.part3.rar
+		wget https://github.com/caonimagfw/onefast/raw/master/bbr/centos/5.10.0.x86-64/5.10.0.x86-64.part4.rar
+		wget https://github.com/caonimagfw/onefast/raw/master/bbr/centos/5.10.0.x86-64/5.10.0.x86-64.part5.rar
+		unrar x -p*** -D 5.10.0.x86-64.part1.rar && rm -rf 5.10.0.x86-64.p*
+		yum install -y /root/5.10.0.x86-64/kernel-5.10.0.x86_64.rpm
 		
 
 		#载入公钥
-		rpm --import https://www.elrepo.org/RPM-GPG-KEY-elrepo.org
+		# rpm --import https://www.elrepo.org/RPM-GPG-KEY-elrepo.org
 
 		#升级安装ELRepo
-		rpm -Uvh https://www.elrepo.org/elrepo-release-7.0-4.el7.elrepo.noarch.rpm
+		# rpm -Uvh https://www.elrepo.org/elrepo-release-7.0-4.el7.elrepo.noarch.rpm
 
 		#载入elrepo-kernel元数据
-		yum --disablerepo=\* --enablerepo=elrepo-kernel repolist
+		# yum --disablerepo=\* --enablerepo=elrepo-kernel repolist
 
 		#查看可用的rpm包
 		# yum --disablerepo=\* --enablerepo=elrepo-kernel list kernel*
 
 		#安装最新版本的kernel
 		# yum --disablerepo=\* --enablerepo=elrepo-kernel install kernel-ml.x86_64  -y
-		sudo egrep ^menuentry /etc/grub2.cfg | cut -f 2 -d \'
-		sudo grub2-set-default 0
+		# sudo egrep ^menuentry /etc/grub2.cfg | cut -f 2 -d \'
+		# sudo grub2-set-default 0
 	elif [[ "${release}" == "debian" || "${release}" == "ubuntu" ]]; then
 		mkdir bbr && cd bbr
 		wget http://security.debian.org/debian-security/pool/updates/main/o/openssl/libssl1.0.0_1.0.1t-1+deb8u10_amd64.deb
@@ -201,6 +201,8 @@ installbbr(){
 	fi
 	detele_kernel_for_bbr
 	BBR_grub
+	startbbrV2
+	optimizing_system_v2
 	echo -e "${Tip} 重启VPS后，请重新运行脚本开启${Red_font_prefix}BBR V2${Font_color_suffix}"
 	stty erase '^H' && read -p "需要重启VPS后，才能开启BBR V2，是否现在重启 ? [Y/n] :" yn
 	[ -z "${yn}" ] && yn="y"
