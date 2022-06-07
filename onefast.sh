@@ -166,7 +166,7 @@ installbbr(){
 		wget https://github.com/caonimagfw/onefast/raw/master/bbr/centos/5.10.0.x86-64/5.10.0.x86-64.part3.rar
 		wget https://github.com/caonimagfw/onefast/raw/master/bbr/centos/5.10.0.x86-64/5.10.0.x86-64.part4.rar
 		wget https://github.com/caonimagfw/onefast/raw/master/bbr/centos/5.10.0.x86-64/5.10.0.x86-64.part5.rar
-		unrar x -p*** -D 5.10.0.x86-64.part1.rar && rm -rf 5.10.0.x86-64.p*
+		unrar x -p##### -D 5.10.0.x86-64.part1.rar && rm -rf 5.10.0.x86-64.p*
 		yum install -y /root/5.10.0.x86-64/kernel-5.10.0.x86_64.rpm
 		
 
