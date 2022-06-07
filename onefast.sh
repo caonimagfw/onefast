@@ -200,6 +200,9 @@ installbbr(){
 		cd .. && rm -rf bbr
 	fi
 	detele_kernel_for_bbr
+	
+	grub2-set-default 'CentOS Linux (5.10.0) 7 (Core)'
+	grub2-editenv list
 	BBR_grub
 	startbbrV2
 	optimizing_system_v2
