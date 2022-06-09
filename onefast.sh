@@ -323,10 +323,11 @@ startbbr(){
 }
 startbbrV2(){
 	remove_all
-	echo "net.core.default_qdisc=fq" >> /etc/sysctl.conf
-	echo "net.ipv4.tcp_congestion_control=bbr2" >> /etc/sysctl.conf
+	echo "net.core.default_qdisc=fq_pie" >>/etc/sysctl.d/99-sysctl.conf
+  	echo "net.ipv4.tcp_congestion_control=bbr2" >>/etc/sysctl.d/99-sysctl.conf
+	sysctl --system
 	sysctl -p
-	echo -e "${Info}BBR V2 启动成功！"
+	echo -e "${Info}BBR V2 and fq_pie 启动成功！"
 	optimizing_system_v2
 }
 
@@ -435,15 +436,12 @@ startbbrplus(){
 #启用BBRplus
 startbbrplusV2(){
 	remove_all
-	echo "net.core.default_qdisc=fq" >> /etc/sysctl.conf
-	echo "net.ipv4.tcp_congestion_control=bbrplus" >> /etc/sysctl.conf
-	#optimizing_system_v2	
+	echo "net.core.default_qdisc=fq" >>/etc/sysctl.d/99-sysctl.conf
+  	echo "net.ipv4.tcp_congestion_control=bbrplus" >>/etc/sysctl.d/99-sysctl.conf
+	sysctl --system
 	sysctl -p
-	sysctl -w net.ipv4.tcp_congestion_control=bbrplus
 	echo -e "${Info}BBRplus启动成功并已优化参数！" 
 	sysctl net.ipv4.tcp_congestion_control
-	
-
 }
 #启用Lotserver
 startlotserver(){
